@@ -1,0 +1,26 @@
+{
+  "name": "ripplews",
+  "version": "1.0.0",
+  "description": "Rippled Client",
+  "main": "client.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "http": "^0.0.0",
+    "minimist": "^1.2.0",
+    "ws": "^2.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisMYchen/RippleWS.git"
+  },
+  "author": "Christopher Chen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrisMYchen/RippleWS/issues"
+  },
+  "homepage": "https://github.com/chrisMYchen/RippleWS#readme"
+}

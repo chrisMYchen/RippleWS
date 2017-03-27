@@ -1,0 +1,26 @@
+Conner mack... ripple solutiosn team
+
+how banks integrate with ripple -->
+
+built on top of inner ledger protocol
+
+ripple consensus layer --> blockchain distributed ledger
+
+new protocol --> inner ledger protocol , people don't like publicly available, everyone agree on one blockchain tech is hard
+  not everyone agree on same ledger, provide a different way for differnet ledgers to communicate, private ,not publicly share transactions
+    not distributed, easier to scale,
+
+product built on ripple consensus, not built on inner ledger protocol
+  getting good reception from banks and work to continue building on that
+
+ripple really focused on building protocol vs an actual use case
+
+  bitcoin issues, lack of governance , scalability issues
+  get people to agree
+
+tech companies /startups addressing a very basic problem
+  something marginally better
+
+reinvent how money moves, huge risk!! huge opportunity to change how things are done.
+
+- being open to new stuff, huge variety things to do things outside, learn new languages! new paradigms!

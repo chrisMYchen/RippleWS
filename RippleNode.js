@@ -1,116 +1,64 @@
-'use strict'
+'use strict';
 const WebSocket = require('ws');
-
-class Client {
-  constructor(serverUrl) {
-    //TODO: URL validation
-      this.serverUrl = serverUrl;
-      this.ws = undefined;
-      this.key = key;
-      this.opened = false;
-  }
-
-  connect() {
-    if (this.ws === undefined) {
-        this.ws = new WebSocket(this.serverUrl, {key: this.key});
-        return this.ws;
-    }
-    else {
-      return this.ws;
-    }
-  }
-
-  sendMessageToServer(data){
-    if (this.opened) {
-      this.ws.send(JSON.stringify(data));
-    }
-    else {
-      this.ws.on('open', function open() {
-        this.send(JSON.stringify(data));
-      });
-    }
-  }
-
-
-  open() {
-    let myWS = this;
-    this.ws.on('open', function open(openevent) {
-        myWS.opened = true;
-        console.log(openevent);
-    });
-  }
-
-  logResponseEvents(){
-    this.ws.on('message', function incoming(data, flags) {
-      console.log(data);
-    });
-  }
-
-  close() {
-    if (this.ws !== undefined) {
-        this.ws.close();
-        this.ws = undefined;
-    }
-  }
-
-}
+const express = require('express');
+const http = require('http');
+const Server = require('./Server');
+const Client = require('./Client');
 
 class RippleNode {
-  constructor(myPort) {
+  constructor(myPort, id){
     this.port = myPort;
-    this.server;
-    //what are connecting to other servers
-    this.clients = [];
+    this.id = id;
+    this.server = new Server(this.port);
+    this.connections = [];
+    this.server.listen();
   }
 
-  connectServer() {
-    if (this.server === undefined ) {
-      this.server = new WebSocket.Server({ port: this.port });
-    }
-    else {
-      return this.server;
-    }
-  }
-  //for "server"
-  listenForConnect() {
-    //TODO: Check if connected, if not, connect, and then do work.
-    this.server.on('connection', function connection(ws) {
-      ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
-      });
-      ws.send('something');
+  //list of urls
+  connect(urls) {
+    console.log(urls);
+    let node = this;
+    urls.forEach(function createClientConnection(url) {
+      console.log(url);
+      let myClient = new Client(url, id);
+      myClient.connect();
+      myClient.open();
+      myClient.logResponseEvents();
+      node.connections.push(myClient);
     });
   }
 
-  addClient(url) {
-      let newClient = Client(url);
-      this.clients.push(newClient);
-  }
-
-  connectClients() {
-    this.clients.forEach(function(client) {
-      client.connect();
-      client.open();
-    });
-  }
-
-  logAllClientResponse() {
-    this.clients.forEach(function(client) {
+  //when node acts as client
+  logAllResponses() {
+    this.connections.forEach(function listen(client) {
+      console.log("in client");
       client.logResponseEvents();
     })
   }
 
-  sendMessageToServer(client, data) {
-    
+  sendMessageFromAClient(cnxn, message) {
+    //TODO: Identify specific clients
+    cnxn.sendMessageToServer(message);
+  }
+
+  //when node acts as server
+  broadcast(message) {
+    this.server.broadcast(message);
   }
 }
 
-let rippleNode1 = new RippleNode(9000);
-rippleNode1.connectServer();
-rippleNode1.listenForConnect();
 
-//TODO: add some command line arguments to specify port for server / what servers i want to clients to
-// constructor
-// server component to be initialized, port
-// and also connect to other "server"/nodes
-// listen to all clients that are connected to me
+var argv = require('minimist')(process.argv.slice(2));
+console.dir(argv);
+let port = argv['port'];
+let urls = argv['urls'];
+let id = argv['id'];
+let myNode = new RippleNode(port, id);
+let urlsList = [];
+myNode.logAllResponses();
+console.log(urls);
+if (urls) {
+  urlsList = urls.split(",");
+  myNode.connect(urlsList);
+  myNode.sendMessageFromAClient(myNode.connections[0], "Message from node client side");
+}

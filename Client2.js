@@ -72,18 +72,18 @@ module.exports = Client;
 // myRippledClient.subscribeToEvents(closedLedgerData);
 // myRippledClient.listenEvents();
 //
-// function sleep (time) {
-//   return new Promise((resolve) => setTimeout(resolve, time));
-// }
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 
 
-// let myClient = new Client('ws://localhost:8080', 'Christopher');
-// myClient.connect();
-// myClient.open();
-// myClient.logResponseEvents();
-// myClient.sendMessageToServer("test data");
-// sleep(500).then(() => {
-//   console.log("sleeped");
-//   myClient.sendMessageToServer("second slow message wow");
-// });
+let myClient = new Client('ws://localhost:4000', 'Christopher');
+myClient.connect();
+myClient.open();
+myClient.logResponseEvents();
+myClient.sendMessageToServer("test data");
+sleep(500).then(() => {
+  console.log("sleeped");
+  myClient.sendMessageToServer("second slow message wow");
+});
