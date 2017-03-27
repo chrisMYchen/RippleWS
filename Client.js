@@ -14,22 +14,18 @@ class Client {
   connect() {
     if (this.ws === undefined) {
         this.ws = new WebSocket(this.serverUrl, {key: this.key});
-        console.log("new connection!");
         return this.ws;
     }
     else {
-      console.log("else statement");
       return this.ws;
     }
   }
 
   sendMessageToServer(data){
     if (this.opened) {
-      console.log("already opened");
       this.ws.send(JSON.stringify(data));
     }
     else {
-      console.log("ahhhh");
       this.ws.on('open', function open() {
         this.send(JSON.stringify(data));
       });
@@ -41,7 +37,6 @@ class Client {
     let myWS = this;
     this.ws.on('open', function open(openevent) {
         myWS.opened = true;
-        console.log('opened');
         console.log(openevent);
     });
   }
@@ -60,30 +55,20 @@ class Client {
   }
 
 }
-
-module.exports = Client;
+//
 // var myRippledClient = new Client('wss://s1.ripple.com:443');
 // myRippledClient.connect();
 // const closedLedgerData = {
-//   "id": "Example watch for new validated ledgers",
+//   "id": "Closed Ledgers",
 //   "command": "subscribe",
 //   "streams": ["ledger"]
 // };
-// myRippledClient.subscribeToEvents(closedLedgerData);
-// myRippledClient.listenEvents();
-//
-function sleep (time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
+// myRippledClient.sendMessageToServer(closedLedgerData);
+// myRippledClient.logResponseEvents();
 
+//.on(something) is an event emitter in node.
 
-
-let myClient = new Client('ws://localhost:8080', 'Christopher');
+let myClient = new Client('ws://localhost:8000');
 myClient.connect();
-myClient.open();
+myClient.sendMessageToServer("Hi! I'm a client.")
 myClient.logResponseEvents();
-myClient.sendMessageToServer("test data");
-sleep(500).then(() => {
-  console.log("sleeped");
-  myClient.sendMessageToServer("second slow message wow");
-});

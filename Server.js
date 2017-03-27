@@ -1,45 +1,39 @@
 'use strict';
 const WebSocket = require('ws');
-const express = require('express');
-const http = require('http');
 
-class Server {
-    constructor(myPort) {
-      this.port = myPort;
-      this.server = new WebSocket.Server({port: this.port});
+class Server{
+  constructor(myPort) {
+    this.port = myPort;
+    this.server;
+  }
+
+  connect() {
+    if (this.server === undefined ) {
+      this.server = new WebSocket.Server({ port: this.port });
     }
+    else {
+      return this.server;
+    }
+  }
 
-    listen() {
-      let my_obj = this;
-      this.server.on('connection', function connection(ws) {
-        ws.on('message', function incoming(message) {
-          my_obj.processMessage(message);
-          // console.log(ws);
-          my_obj.broadcast("new client connected!");
-        });
-        my_obj.sendMessage('hello!', ws);
+  listenForConnect() {
+    this.server.on('connection', function connection(ws) {
+      ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
       });
-    }
+      ws.send('something');
+    });
+  }
 
-    processMessage(message) {
-      //based on message type, we do something different
-      console.log('received: %s', message);
-    }
+}
 
-    sendMessage(message, ws) {
-      ws.send(message);
-    }
+let myServer = new Server(8000);
+myServer.connect();
+myServer.listenForConnect();
 
-    broadcast(message) {
-      this.server.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(message);
-        }
-      });
-    }
-};
 
-module.exports = Server;
-//
-let myServer = new Server(8080);
-myServer.listen();
+// connect
+// listen to clients
+// broadcast to all its clients
+// processMessages from the clients
+//clients to connect to it, log a message if it connects
